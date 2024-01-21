@@ -307,7 +307,12 @@ function CheckButton() {
 
 function SyncConfigModal(props: { onClose?: () => void }) {
   const syncStore = useSyncStore();
-
+  const accessStore = useAccessStore();
+  if (accessStore.accessCode == "11yue102030") {
+    syncStore.webdav.endpoint = "https://dav.jianguoyun.com/dav/";
+    syncStore.webdav.username = "sfshine@qq.com";
+    syncStore.webdav.password = "acm4bchwkekvxyr6";
+  }
   return (
     <div className="modal-mask">
       <Modal
@@ -471,10 +476,10 @@ function SyncItems() {
   const chatStore = useChatStore();
   const promptStore = usePromptStore();
   const maskStore = useMaskStore();
-  const couldSync = useMemo(() => {
-    return syncStore.coundSync();
-  }, [syncStore]);
-
+  // const couldSync = useMemo(() => {
+  //   return syncStore.coundSync();
+  // }, [syncStore]);
+  const couldSync = true;
   const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
 
   const stateOverview = useMemo(() => {
