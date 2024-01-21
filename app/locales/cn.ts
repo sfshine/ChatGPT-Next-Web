@@ -183,7 +183,7 @@ const cn = {
       CloudState: "云端数据",
       NotSyncYet: "还没有进行过同步",
       Success: "同步成功",
-      Fail: "同步失败",
+      Fail: "同步失败, 请在设置检查云同步配置(设置->云端数据->配置)",
 
       Config: {
         Modal: {
