@@ -30,6 +30,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
+import ResetIcon from "../icons/reload.svg";
+import { useSyncStore } from "../store/sync";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -130,6 +132,7 @@ function useDragSideBar() {
 
 export function SideBar(props: { className?: string }) {
   const chatStore = useChatStore();
+  const syncStore = useSyncStore();
 
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
@@ -185,6 +188,21 @@ export function SideBar(props: { className?: string }) {
           className={styles["sidebar-bar-button"]}
           onClick={() => showToast(Locale.WIP)}
           shadow
+        />
+        <IconButton
+            icon={<ResetIcon />}
+            text={shouldNarrow ? undefined : Locale.UI.Sync}
+            className={styles["sidebar-bar-button"]}
+            onClick={async () => {
+              try {
+                await syncStore.sync();
+                showToast(Locale.Settings.Sync.Success);
+              } catch (e) {
+                showToast(Locale.Settings.Sync.Fail);
+                console.error("[Sync]", e);
+              }
+            }}
+            shadow
         />
       </div>
 
