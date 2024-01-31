@@ -103,12 +103,10 @@ export const useSyncStore = createPersistStore(
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
       }
-      const filteredObject = Object.entries(localState["chat-next-web-store"] as any).reduce((acc, [key, value]) => {
-        if (key === 'sessions') {
-          if (Array.isArray(value)) {
-            const filteredSessions = value.filter(session => !session.topic.startsWith('#'));
-            acc[key] = filteredSessions;
-          }
+      const filteredObject = Object.entries(localState["chat-next-web-store"]).reduce((acc: { [key: string]: any }, [key, value]) => {
+        if (key === 'sessions' && Array.isArray(value)) {
+          const filteredSessions = value.filter(session => !session.topic.startsWith('#'));
+          acc[key] = filteredSessions;
         } else {
           acc[key] = value;
         }
