@@ -105,12 +105,15 @@ export const useSyncStore = createPersistStore(
       }
       const filteredObject = Object.entries(localState["chat-next-web-store"]).reduce((acc, [key, value]) => {
         if (key === 'sessions') {
-          const filteredSessions = value.filter(session => !session.topic.startsWith('#'));
-          acc[key] = filteredSessions;
+          if (Array.isArray(value)) {
+            const filteredSessions = value.filter(session => !session.topic.startsWith('#'));
+            acc[key] = filteredSessions;
+          } else {
+            // Handle case when value is not an array
+          }
         } else {
           acc[key] = value;
         }
-        return acc;
       }, {});
       await client.set(config.username, JSON.stringify(filteredObject));
 
