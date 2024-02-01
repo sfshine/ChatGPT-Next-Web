@@ -14,7 +14,7 @@ export function createWebDavClient(store: SyncStore) {
   return {
     getFileName() {
       const data = new Date();
-      const monthStr = `${data.getFullYear()}${data.getMonth()}`
+      const monthStr = `${data.getFullYear()}${data.getMonth() + 1}`
       return `${folder}/backup_${monthStr}.json`;
       // return `${folder}/backup.json`;
     },
