@@ -91,13 +91,16 @@ export const useSyncStore = createPersistStore(
      * @param force 0 merge, 1 本地覆盖云端 2 云端覆盖本地
      */
     async sync(force?: number) {
-      const localState = force == 2? {} as AppState : getLocalAppState();
+      const localState = getLocalAppState();
+      if (force == 2){
+        localState["chat-next-web-store"]['session'] = []
+      }
       const provider = get().provider;
       const config = get()[provider];
       const client = this.getClient();
 
       try {
-        const remoteState =(force == 1? {} : JSON.parse(
+        const remoteState =(force == 1 ? {} : JSON.parse(
             await client.get(config.username),
         )) as AppState;
         mergeAppState(localState, remoteState);
