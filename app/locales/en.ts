@@ -457,6 +457,7 @@ const en: LocaleType = {
     Export: "Export",
     Import: "Import",
     Sync: "Sync",
+    SyncForce: "Sync(Clear Cloud Data)",
     Config: "Config",
   },
   Exporter: {

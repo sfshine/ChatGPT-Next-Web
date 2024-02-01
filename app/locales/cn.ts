@@ -455,6 +455,7 @@ const cn = {
     Export: "导出",
     Import: "导入",
     Sync: "同步",
+    SyncForce: "同步(清空云端)",
     Config: "配置",
   },
   Exporter: {

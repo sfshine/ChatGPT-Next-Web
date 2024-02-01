@@ -88,16 +88,16 @@ export const useSyncStore = createPersistStore(
       return client;
     },
 
-    async sync() {
+    async sync(force?: boolean) {
       const localState = getLocalAppState();
       const provider = get().provider;
       const config = get()[provider];
       const client = this.getClient();
 
       try {
-        const remoteState = JSON.parse(
-          await client.get(config.username),
-        ) as AppState;
+        const remoteState =(force? {} : JSON.parse(
+            await client.get(config.username),
+        )) as AppState;
         mergeAppState(localState, remoteState);
         setLocalAppState(localState);
       } catch (e) {
