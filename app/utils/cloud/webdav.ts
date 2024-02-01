@@ -7,12 +7,16 @@ export type WebDavClient = ReturnType<typeof createWebDavClient>;
 
 export function createWebDavClient(store: SyncStore) {
   const folder = STORAGE_KEY;
-  const fileName = `${folder}/backup`;
   const config = store.webdav;
   const proxyUrl =
-    store.useProxy && store.proxyUrl.length > 0 ? store.proxyUrl : undefined;
+      store.useProxy && store.proxyUrl.length > 0 ? store.proxyUrl : undefined;
 
   return {
+    getFileName() {
+      const data = new Date();
+      const monthStr = `${data.getFullYear()}${data.getMonth()}`
+      return `${folder}/backup_${monthStr}.json`;
+    },
     async check() {
       try {
         const res = await corsFetch(this.path(folder), {
@@ -30,7 +34,7 @@ export function createWebDavClient(store: SyncStore) {
     },
 
     async get(key: string) {
-      const res = await corsFetch(this.path(fileName), {
+      const res = await corsFetch(this.path(this.getFileName()), {
         method: "GET",
         headers: this.headers(),
         proxyUrl,
@@ -42,9 +46,7 @@ export function createWebDavClient(store: SyncStore) {
     },
 
     async set(key: string, value: string) {
-      const data = new Date();
-      const monthStr = `${data.getFullYear()}${data.getMonth()}`
-      const res = await corsFetch(this.path(fileName + monthStr + '.json'), {
+      const res = await corsFetch(this.path(this.getFileName()), {
         method: "PUT",
         headers: this.headers(),
         body: value,
