@@ -103,9 +103,24 @@ export const useSyncStore = createPersistStore(
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
       }
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth(); // 月份是从0开始的，0代表一月
+
       const filteredObject = Object.entries(localState["chat-next-web-store"]).reduce((acc: { [key: string]: any }, [key, value]) => {
         if (key === 'sessions' && Array.isArray(value)) {
-          const filteredSessions = value.filter(session => !session.topic.startsWith('#'));
+          const filteredSessions = value.filter(session => {
+            // 检查session是否不以'#'开头
+            const doesNotStartWithHash = !session.topic.startsWith('#');
+            // 将时间戳转换为Date对象
+            const lastUpdateDate = new Date(session.lastUpdate);
+            // 检查年份和月份是否与当前的年份和月份相符
+            const isCurrentMonth =
+                lastUpdateDate.getFullYear() === currentYear &&
+                lastUpdateDate.getMonth() === currentMonth;
+            // 两个条件都需要满足
+            return doesNotStartWithHash && isCurrentMonth;
+          });
           acc[key] = filteredSessions;
         } else {
           acc[key] = value;
