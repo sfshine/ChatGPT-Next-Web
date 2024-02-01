@@ -516,19 +516,34 @@ function SyncItems() {
               }}
             />
             {couldSync && (
-              <IconButton
-                icon={<ResetIcon />}
-                text={Locale.UI.SyncForce}
-                onClick={async () => {
-                  try {
-                    await syncStore.sync(true);
-                    showToast(Locale.Settings.Sync.Success);
-                  } catch (e) {
-                    showToast(Locale.Settings.Sync.Fail);
-                    console.error("[Sync]", e);
-                  }
-                }}
-              />
+                <div style={{ display: "flex", flexDirection:"column" }}>
+                  <IconButton
+                      icon={<ResetIcon />}
+                      text={Locale.UI.SyncForce1}
+                      onClick={async () => {
+                        try {
+                          await syncStore.sync(1);
+                          showToast(Locale.Settings.Sync.Success);
+                        } catch (e) {
+                          showToast(Locale.Settings.Sync.Fail);
+                          console.error("[Sync]", e);
+                        }
+                      }}
+                  />
+                <IconButton
+                    icon={<ResetIcon />}
+                    text={Locale.UI.SyncForce2}
+                    onClick={async () => {
+                      try {
+                        await syncStore.sync(2);
+                        showToast(Locale.Settings.Sync.Success);
+                      } catch (e) {
+                        showToast(Locale.Settings.Sync.Fail);
+                        console.error("[Sync]", e);
+                      }
+                    }}
+                />
+                </div>
             )}
           </div>
         </ListItem>

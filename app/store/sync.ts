@@ -87,19 +87,22 @@ export const useSyncStore = createPersistStore(
       const client = createSyncClient(provider, get());
       return client;
     },
-
-    async sync(force?: boolean) {
-      const localState = getLocalAppState();
+    /**
+     * @param force 0 merge, 1 本地覆盖云端 2 云端覆盖本地
+     */
+    async sync(force?: number) {
+      const localState = force == 2? {} as AppState : getLocalAppState();
       const provider = get().provider;
       const config = get()[provider];
       const client = this.getClient();
 
       try {
-        const remoteState =(force? {} : JSON.parse(
+        const remoteState =(force == 1? {} : JSON.parse(
             await client.get(config.username),
         )) as AppState;
         mergeAppState(localState, remoteState);
         setLocalAppState(localState);
+        console.log("localState",localState)
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
       }

@@ -195,7 +195,7 @@ export function SideBar(props: { className?: string }) {
             className={styles["sidebar-bar-button"]}
             onClick={async () => {
               try {
-                await syncStore.sync();
+                await syncStore.sync(0);
                 showToast(Locale.Settings.Sync.Success);
               } catch (e) {
                 showToast(Locale.Settings.Sync.Fail);
