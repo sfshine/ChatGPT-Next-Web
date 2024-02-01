@@ -103,16 +103,16 @@ export const useSyncStore = createPersistStore(
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
       }
-      const filteredObject = Object.entries(localState["chat-next-web-store"]).reduce((acc: { [key: string]: any }, [key, value]) => {
-        if (key === 'sessions' && Array.isArray(value)) {
-          // const filteredSessions = value.filter(session => !session.topic.startsWith('#'));
-          const filteredSessions = value.slice(0, 20);
-          acc[key] = filteredSessions;
-        } else {
-          acc[key] = value;
-        }
-        return acc;
-      }, {});
+      // const filteredObject = Object.entries(localState["chat-next-web-store"]).reduce((acc: { [key: string]: any }, [key, value]) => {
+      //   if (key === 'sessions' && Array.isArray(value)) {
+      //     const filteredSessions = value.filter(session => !session.topic.startsWith('#'));
+      //     const filteredSessions = value.slice(0, 20);
+      //     acc[key] = filteredSessions;
+      //   } else {
+      //     acc[key] = value;
+      //   }
+      //   return acc;
+      // }, {});
       await client.set(config.username, JSON.stringify(filteredObject));
 
       this.markSyncTime();
