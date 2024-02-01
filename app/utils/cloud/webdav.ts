@@ -13,10 +13,10 @@ export function createWebDavClient(store: SyncStore) {
 
   return {
     getFileName() {
-      // const data = new Date();
-      // const monthStr = `${data.getFullYear()}${data.getMonth()}`
-      // return `${folder}/backup_${monthStr}.json`;
-      return `${folder}/backup.json`;
+      const data = new Date();
+      const monthStr = `${data.getFullYear()}${data.getMonth()}`
+      return `${folder}/backup_${monthStr}.json`;
+      // return `${folder}/backup.json`;
     },
     async check() {
       try {
