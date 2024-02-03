@@ -61,8 +61,8 @@ export const useSyncStore = createPersistStore(
     export() {
       const state = getLocalAppState();
       const datePart = isApp
-      ? `${new Date().toLocaleDateString().replace(/\//g, '_')} ${new Date().toLocaleTimeString().replace(/:/g, '_')}`
-      : new Date().toLocaleString();
+        ? `${new Date().toLocaleDateString().replace(/\//g, '_')} ${new Date().toLocaleTimeString().replace(/:/g, '_')}`
+        : new Date().toLocaleString();
 
       const fileName = `Backup-${datePart}.json`;
       downloadAs(JSON.stringify(state), fileName);
@@ -93,22 +93,22 @@ export const useSyncStore = createPersistStore(
      */
     async sync(force?: number) {
       const localState = getLocalAppState();
-      if (force == 2){
+      if (force == 2) {
         (localState["chat-next-web-store"] as any)["sessions"] = [];
         (localState["mask-store"] as any)["masks"] = [];
-        //(localState["app-config"] as any) = { lastUpdateTime: Infinity };
+        (localState["app-config"] as any) = { ...(localState["app-config"]), lastUpdateTime: Infinity };
       }
       const provider = get().provider;
       const config = get()[provider];
       const client = this.getClient();
 
       try {
-        const remoteState =(force == 1 ? {} : JSON.parse(
-            await client.get(config.username),
+        const remoteState = (force == 1 ? {} : JSON.parse(
+          await client.get(config.username),
         )) as AppState;
         mergeAppState(localState, remoteState);
         setLocalAppState(localState);
-        console.log("localState",localState)
+        console.log("localState", localState)
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
       }
