@@ -14,6 +14,7 @@ import { showToast } from "../components/ui-lib";
 import Locale from "../locales";
 import { createSyncClient, ProviderType } from "../utils/cloud";
 import { corsPath } from "../utils/cors";
+import { inflate } from "zlib";
 
 export interface WebDavConfig {
   server: string;
@@ -95,6 +96,7 @@ export const useSyncStore = createPersistStore(
       if (force == 2){
         (localState["chat-next-web-store"] as any)["sessions"] = [];
         (localState["mask-store"] as any)["masks"] = [];
+        (localState["app-config"] as any) = { lastUpdateTime: Infinity };
       }
       const provider = get().provider;
       const config = get()[provider];
