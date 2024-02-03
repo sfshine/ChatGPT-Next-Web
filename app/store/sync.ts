@@ -88,12 +88,12 @@ export const useSyncStore = createPersistStore(
       return client;
     },
     /**
-     * @param force 0 merge, 1 本地覆盖云端 2 云端覆盖本地
+     * @param force 0 merge, 1 清空云端 2 清空本地
      */
     async sync(force?: number) {
       const localState = getLocalAppState();
       if (force == 2){
-        (localState["chat-next-web-store"] as any)["session"] = []
+        (localState["chat-next-web-store"] as any)["sessions"] = []
       }
       const provider = get().provider;
       const config = get()[provider];
