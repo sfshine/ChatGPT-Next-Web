@@ -94,7 +94,7 @@ export const useSyncStore = createPersistStore(
       const localState = getLocalAppState();
       if (force == 2){
         (localState["chat-next-web-store"] as any)["sessions"] = [];
-        (localState["chat-next-web-store"] as any)["mask-store"] = [];
+        (localState["mask-store"] as any)["masks"] = [];
       }
       const provider = get().provider;
       const config = get()[provider];
