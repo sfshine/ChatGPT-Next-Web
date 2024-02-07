@@ -97,11 +97,7 @@ export const useSyncStore = createPersistStore(
       if (force == 2) {
         (localState["chat-next-web-store"] as any)["sessions"] = [];
         (localState["mask-store"] as any)["masks"] = [];
-        (localState["app-config"] as any) = {
-          ...(localState["app-config"]),
-          models: DEFAULT_MODELS,
-          lastUpdateTime: Infinity
-        };
+        (localState["app-config"] as any) = { ...(localState["app-config"]), lastUpdateTime: Infinity };
       }
       const provider = get().provider;
       const config = get()[provider];
@@ -112,6 +108,7 @@ export const useSyncStore = createPersistStore(
           await client.get(config.username),
         )) as AppState;
         mergeAppState(localState, remoteState);
+        (localState["app-config"] as any) = { ...(localState["app-config"]), models: DEFAULT_MODELS };
         setLocalAppState(localState);
         console.log("localState", localState)
       } catch (e) {
