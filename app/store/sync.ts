@@ -14,7 +14,6 @@ import { showToast } from "../components/ui-lib";
 import Locale from "../locales";
 import { createSyncClient, ProviderType } from "../utils/cloud";
 import { corsPath } from "../utils/cors";
-import { inflate } from "zlib";
 
 export interface WebDavConfig {
   server: string;
@@ -49,7 +48,7 @@ const DEFAULT_SYNC_STATE = {
 export const useSyncStore = createPersistStore(
   DEFAULT_SYNC_STATE,
   (set, get) => ({
-    coundSync() {
+    cloudSync() {
       const config = get()[get().provider];
       return Object.values(config).every((c) => c.toString().length > 0);
     },
@@ -61,7 +60,9 @@ export const useSyncStore = createPersistStore(
     export() {
       const state = getLocalAppState();
       const datePart = isApp
-        ? `${new Date().toLocaleDateString().replace(/\//g, '_')} ${new Date().toLocaleTimeString().replace(/:/g, '_')}`
+        ? `${new Date().toLocaleDateString().replace(/\//g, "_")} ${new Date()
+            .toLocaleTimeString()
+            .replace(/:/g, "_")}`
         : new Date().toLocaleString();
 
       const fileName = `Backup-${datePart}.json`;
