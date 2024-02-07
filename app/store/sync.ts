@@ -1,6 +1,6 @@
 import { getClientConfig } from "../config/client";
 import { Updater } from "../typing";
-import { ApiPath, STORAGE_KEY, StoreKey } from "../constant";
+import {ApiPath, DEFAULT_MODELS, STORAGE_KEY, StoreKey} from "../constant";
 import { createPersistStore } from "../utils/store";
 import {
   AppState,
@@ -97,7 +97,11 @@ export const useSyncStore = createPersistStore(
       if (force == 2) {
         (localState["chat-next-web-store"] as any)["sessions"] = [];
         (localState["mask-store"] as any)["masks"] = [];
-        (localState["app-config"] as any) = { ...(localState["app-config"]), lastUpdateTime: Infinity };
+        (localState["app-config"] as any) = {
+          ...(localState["app-config"]),
+          models: DEFAULT_MODELS,
+          lastUpdateTime: Infinity
+        };
       }
       const provider = get().provider;
       const config = get()[provider];
