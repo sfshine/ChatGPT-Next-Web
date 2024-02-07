@@ -476,10 +476,10 @@ function SyncItems() {
   const chatStore = useChatStore();
   const promptStore = usePromptStore();
   const maskStore = useMaskStore();
-  const couldSync = useMemo(() => {
-    return syncStore.cloudSync();
-  }, [syncStore]);
-
+  // const couldSync = useMemo(() => {
+  //   return syncStore.cloudSync();
+  // }, [syncStore]);
+  const couldSync = true;
   const [showSyncConfigModal, setShowSyncConfigModal] = useState(false);
 
   const stateOverview = useMemo(() => {
