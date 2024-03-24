@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "strict": false,               // 关闭所有严格类型检查
-    "noImplicitAny": false,        // 允许隐式的 'any' 类型
+    "noImplicitAny": false,
     "strictNullChecks": false,     // 允许 null 和 undefined 赋值给所有类型
     "strictFunctionTypes": false,  // 不对函数参数双向协变进行检查
     "strictBindCallApply": false,  // 不严格检查 bind、call 和 apply 的参数类型

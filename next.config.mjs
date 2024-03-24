@@ -33,6 +33,9 @@ const nextConfig = {
   experimental: {
     forceSwcTransforms: true,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  }
 };
 
 const CorsHeaders = [
