@@ -43,11 +43,15 @@ const DEFAULT_SYNC_STATE = {
 
   lastSyncTime: 0,
   lastProvider: "",
+  monthStr :"",
 };
 
 export const useSyncStore = createPersistStore(
   DEFAULT_SYNC_STATE,
   (set, get) => ({
+    setMonthStr(monthStr: string) {
+        set({ monthStr: monthStr });
+    },
     cloudSync() {
       const config = get()[get().provider];
       return Object.values(config).every((c) => c.toString().length > 0);
@@ -100,12 +104,13 @@ export const useSyncStore = createPersistStore(
         (localState["app-config"] as any) = { ...(localState["app-config"]), lastUpdateTime: Infinity };
       }
       const provider = get().provider;
+      const monthStr = get().monthStr
       const config = get()[provider];
       const client = this.getClient();
 
       try {
         const remoteState = (force == 1 ? {} : JSON.parse(
-          await client.get(config.username),
+          await client.get(monthStr),
         )) as AppState;
         mergeAppState(localState, remoteState);
         (localState["app-config"] as any) = { ...(localState["app-config"]), models: DEFAULT_MODELS };
@@ -124,7 +129,7 @@ export const useSyncStore = createPersistStore(
       //   }
       //   return acc;
       // }, {});
-      await client.set(config.username, JSON.stringify(localState));
+      await client.set(monthStr, JSON.stringify(localState));
 
       this.markSyncTime();
     },
