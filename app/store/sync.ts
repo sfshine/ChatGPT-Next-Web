@@ -14,6 +14,7 @@ import { showToast } from "../components/ui-lib";
 import Locale from "../locales";
 import { createSyncClient, ProviderType } from "../utils/cloud";
 import { corsPath } from "../utils/cors";
+import moment from 'moment';
 
 export interface WebDavConfig {
   server: string;
@@ -51,6 +52,10 @@ export const useSyncStore = createPersistStore(
   (set, get) => ({
     setMonthStr(monthStr: string) {
         set({ monthStr: monthStr });
+    },
+    getFileName() {
+      const monthStr = get().monthStr || `${moment().format("YYYYMM")}`
+      return `${STORAGE_KEY}/backup_${monthStr}.json`;
     },
     cloudSync() {
       const config = get()[get().provider];
@@ -104,13 +109,12 @@ export const useSyncStore = createPersistStore(
         (localState["app-config"] as any) = { ...(localState["app-config"]), lastUpdateTime: Infinity };
       }
       const provider = get().provider;
-      const monthStr = get().monthStr
       const config = get()[provider];
       const client = this.getClient();
 
       try {
         const remoteState = (force == 1 ? {} : JSON.parse(
-          await client.get(monthStr),
+          await client.get(this.getFileName()),
         )) as AppState;
         mergeAppState(localState, remoteState);
         (localState["app-config"] as any) = { ...(localState["app-config"]), models: DEFAULT_MODELS };
@@ -119,17 +123,7 @@ export const useSyncStore = createPersistStore(
       } catch (e) {
         console.log("[Sync] failed to get remote state", e);
       }
-      // const filteredObject = Object.entries(localState["chat-next-web-store"]).reduce((acc: { [key: string]: any }, [key, value]) => {
-      //   if (key === 'sessions' && Array.isArray(value)) {
-      //     const filteredSessions = value.filter(session => !session.topic.startsWith('#'));
-      //     const filteredSessions = value.slice(0, 20);
-      //     acc[key] = filteredSessions;
-      //   } else {
-      //     acc[key] = value;
-      //   }
-      //   return acc;
-      // }, {});
-      await client.set(monthStr, JSON.stringify(localState));
+      await client.set(this.getFileName(), JSON.stringify(localState));
 
       this.markSyncTime();
     },

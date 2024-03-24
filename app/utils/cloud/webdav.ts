@@ -12,12 +12,6 @@ export function createWebDavClient(store: SyncStore) {
     store.useProxy && store.proxyUrl.length > 0 ? store.proxyUrl : undefined;
 
   return {
-    getFileName(month?: string) {
-      const data = new Date();
-      const monthStr = month || `${data.getFullYear()}${data.getMonth() + 1}`
-      return `${folder}/backup_${monthStr}.json`;
-      // return `${folder}/backup.json`;
-    },
     async check() {
       try {
         const res = await corsFetch(this.path(folder), {
@@ -35,7 +29,7 @@ export function createWebDavClient(store: SyncStore) {
     },
 
     async get(key: string) {
-      const res = await corsFetch(this.path(this.getFileName(key)), {
+      const res = await corsFetch(this.path(key), {
         method: "GET",
         headers: this.headers(),
         proxyUrl,
@@ -47,7 +41,7 @@ export function createWebDavClient(store: SyncStore) {
     },
 
     async set(key: string, value: string) {
-      const res = await corsFetch(this.path(this.getFileName(key)), {
+      const res = await corsFetch(this.path(key), {
         method: "PUT",
         headers: this.headers(),
         body: value,

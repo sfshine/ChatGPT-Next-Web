@@ -14,6 +14,7 @@ import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
 import InputModal from "../history/inputmodal"
 import Locale from "../locales";
+import moment from 'moment';
 
 import { useAppConfig, useChatStore } from "../store";
 
@@ -23,7 +24,7 @@ import {
   MIN_SIDEBAR_WIDTH,
   NARROW_SIDEBAR_WIDTH,
   Path,
-  REPO_URL,
+  REPO_URL, STORAGE_KEY,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -138,7 +139,7 @@ export function SideBar(props: { className?: string }) {
   const syncStore = useSyncStore();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [monthStr, setMonthStr] = useState('');
+  const [selectedDate, setSelectedDate] = useState(moment()); // 默认为当前日期
 
   // drag side barmonthStr
   const { onDragStart, shouldNarrow } = useDragSideBar();
@@ -156,7 +157,6 @@ export function SideBar(props: { className?: string }) {
     try {
       syncStore.setMonthStr(monthStr)
       await syncStore.sync(2);//清空本地
-      setMonthStr(monthStr)
       showToast(Locale.Settings.Sync.Success);
       setIsModalOpen(false);
     } catch (e) {
@@ -179,7 +179,7 @@ export function SideBar(props: { className?: string }) {
           NextChat
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          {monthStr ? `当前同步文件:[${monthStr}]` : "Build your own AI assistant."}
+          sync : {syncStore.getFileName().replace(`${STORAGE_KEY}/`, "")}
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -289,10 +289,11 @@ export function SideBar(props: { className?: string }) {
             setIsModalOpen(false);
           }}
           onClear={() => {
+            setSelectedDate(moment())
             syncHistory("").catch()
           }}
           onConfirm={()=>{
-            syncHistory(monthStr).catch()
+            syncHistory(selectedDate.format("YYYYMM")).catch()
           }}>
         <div>
           <text style={{color: "red"}}>警告!此操作将清空本地数据</text>
@@ -301,8 +302,7 @@ export function SideBar(props: { className?: string }) {
             format="YYYYMM"
             picker="month"
             onChange={(value) => {
-              const formattedDate = value ? value.format('YYYYMM') : '';
-              setMonthStr(formattedDate);
+              setSelectedDate(value)
             }}
         />
       </InputModal>
