@@ -274,6 +274,10 @@ export function SideBar(props: { className?: string }) {
           onClose={() => {
             setIsModalOpen(false);
           }}
+          onClear={() => {
+            setMonthStr("")
+            setIsModalOpen(false);
+          }}
           onConfirm={() => {
             syncStore.setMonthStr(monthStr)
             setIsModalOpen(false);
