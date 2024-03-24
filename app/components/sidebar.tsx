@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -12,7 +12,7 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
 import DragIcon from "../icons/drag.svg";
-
+import InputModal from "../history/inputmodal"
 import Locale from "../locales";
 
 import { useAppConfig, useChatStore } from "../store";
@@ -57,6 +57,7 @@ function useHotKey() {
 }
 
 function useDragSideBar() {
+
   const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
 
   const config = useAppConfig();
@@ -131,8 +132,12 @@ function useDragSideBar() {
 }
 
 export function SideBar(props: { className?: string }) {
+
   const chatStore = useChatStore();
   const syncStore = useSyncStore();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [monthStr, setMonthStr] = useState('');
 
   // drag side bar
   const { onDragStart, shouldNarrow } = useDragSideBar();
@@ -148,9 +153,8 @@ export function SideBar(props: { className?: string }) {
 
   return (
     <div
-      className={`${styles.sidebar} ${props.className} ${
-        shouldNarrow && styles["narrow-sidebar"]
-      }`}
+      className={`${styles.sidebar} ${props.className} ${shouldNarrow && styles["narrow-sidebar"]
+        }`}
       style={{
         // #3016 disable transition on ios mobile screen
         transition: isMobileScreen && isIOSMobile ? "none" : undefined,
@@ -161,7 +165,7 @@ export function SideBar(props: { className?: string }) {
           NextChat
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          {monthStr ? `当前同步文件:[${monthStr}]` : "Build your own AI assistant."}
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -186,23 +190,25 @@ export function SideBar(props: { className?: string }) {
           icon={<PluginIcon />}
           text={shouldNarrow ? undefined : Locale.Plugin.Name}
           className={styles["sidebar-bar-button"]}
-          onClick={() => showToast(Locale.WIP)}
+          onClick={() => {
+            setIsModalOpen(true);
+          }}
           shadow
         />
         <IconButton
-            icon={<ResetIcon />}
-            text={shouldNarrow ? undefined : Locale.UI.Sync}
-            className={styles["sidebar-bar-button"]}
-            onClick={async () => {
-              try {
-                await syncStore.sync(0);
-                showToast(Locale.Settings.Sync.Success);
-              } catch (e) {
-                showToast(Locale.Settings.Sync.Fail);
-                console.error("[Sync]", e);
-              }
-            }}
-            shadow
+          icon={<ResetIcon />}
+          text={shouldNarrow ? undefined : Locale.UI.Sync}
+          className={styles["sidebar-bar-button"]}
+          onClick={async () => {
+            try {
+              await syncStore.sync(0);
+              showToast(Locale.Settings.Sync.Success);
+            } catch (e) {
+              showToast(Locale.Settings.Sync.Fail);
+              console.error("[Sync]", e);
+            }
+          }}
+          shadow
         />
       </div>
 
@@ -263,6 +269,22 @@ export function SideBar(props: { className?: string }) {
       >
         <DragIcon />
       </div>
+      <InputModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
+          onConfirm={() => {
+            syncStore.setMonthStr(monthStr)
+            setIsModalOpen(false);
+          }}>
+        <input
+            type="text"
+            value={monthStr}
+            onChange={(e) => {
+              setMonthStr(e.target.value);
+            }}/>
+      </InputModal>
     </div>
   );
 }
