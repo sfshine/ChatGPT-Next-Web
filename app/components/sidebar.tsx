@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useState } from "react";
+import React, { useEffect, useRef, useMemo, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -139,7 +139,7 @@ export function SideBar(props: { className?: string }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [monthStr, setMonthStr] = useState('');
 
-  // drag side bar
+  // drag side barmonthStr
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
   const config = useAppConfig();
@@ -150,6 +150,19 @@ export function SideBar(props: { className?: string }) {
   );
 
   useHotKey();
+
+  const syncHistory = async (monthStr) => {
+    try {
+      syncStore.setMonthStr(monthStr)
+      await syncStore.sync(2);//清空本地
+      setMonthStr(monthStr)
+      showToast(Locale.Settings.Sync.Success);
+      setIsModalOpen(false);
+    } catch (e) {
+      showToast(Locale.Settings.Sync.Fail);
+      console.error("[Sync]", e);
+    }
+  }
 
   return (
     <div
@@ -188,7 +201,7 @@ export function SideBar(props: { className?: string }) {
         />
         <IconButton
           icon={<PluginIcon />}
-          text={shouldNarrow ? undefined : Locale.Plugin.Name}
+          text={shouldNarrow ? undefined : Locale.UI.SyncHistory}
           className={styles["sidebar-bar-button"]}
           onClick={() => {
             setIsModalOpen(true);
@@ -275,13 +288,14 @@ export function SideBar(props: { className?: string }) {
             setIsModalOpen(false);
           }}
           onClear={() => {
-            setMonthStr("")
-            setIsModalOpen(false);
+            syncHistory("").catch()
           }}
-          onConfirm={() => {
-            syncStore.setMonthStr(monthStr)
-            setIsModalOpen(false);
+          onConfirm={()=>{
+            syncHistory(monthStr).catch()
           }}>
+        <div>
+          <text style={{color: "red"}}>警告!此操作将清空本地数据</text>
+        </div>
         <input
             type="text"
             value={monthStr}
