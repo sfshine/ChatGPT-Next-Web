@@ -32,6 +32,7 @@ import dynamic from "next/dynamic";
 import { showConfirm, showToast } from "./ui-lib";
 import ResetIcon from "../icons/reload.svg";
 import { useSyncStore } from "../store/sync";
+import {DatePicker} from "antd";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -296,12 +297,14 @@ export function SideBar(props: { className?: string }) {
         <div>
           <text style={{color: "red"}}>警告!此操作将清空本地数据</text>
         </div>
-        <input
-            type="text"
-            value={monthStr}
-            onChange={(e) => {
-              setMonthStr(e.target.value);
-            }}/>
+        <DatePicker
+            format="YYYYMM"
+            picker="month"
+            onChange={(value) => {
+              const formattedDate = value ? value.format('YYYYMM') : '';
+              setMonthStr(formattedDate);
+            }}
+        />
       </InputModal>
     </div>
   );
